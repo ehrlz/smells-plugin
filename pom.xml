@@ -33,11 +33,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-        <groupId>edu.rit.se.testsmells</groupId>
-        <artifactId>TestSmellDetector</artifactId>
-        <version>0.1</version>
-    </dependency>
 
     <!-- tsDetect -->
     <dependency>
