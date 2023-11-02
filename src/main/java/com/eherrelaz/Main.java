@@ -5,9 +5,8 @@ import com.eherrelaz.testsmell.ResultsWriter;
 import com.eherrelaz.testsmell.TestFile;
 import com.eherrelaz.testsmell.TestSmellDetector;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,49 +15,41 @@ import java.util.Date;
 import java.util.List;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
-        if (args == null) {
-            System.out.println("Please provide the file containing the paths to the collection of test files");
-            return;
-        }
-        if(!args[0].isEmpty()){
-            File inputFile = new File(args[0]);
-            if(!inputFile.exists() || inputFile.isDirectory()) {
-                System.out.println("Please provide a valid file containing the paths to the collection of test files");
-                return;
-            }
-        }
+
+        // Project name
+        File readme = new File("README.md");
+        byte[] buff = new byte[28];
+
+        FileInputStream fileInputStream = new FileInputStream(readme);
+        fileInputStream.read(buff);
+        fileInputStream.close();
 
         TestSmellDetector testSmellDetector = new TestSmellDetector();
 
-        /*
-          Read the input file and build the TestFile objects
-         */
-        BufferedReader in = new BufferedReader(new FileReader(args[0]));
-        String str;
+        // Hardcoded. Recursive alg. pending
+        String name = new String(buff).substring(3);
+        String str = name
+                + ",src/test/java/es/upm/grise/prof/curso2023/ejercicio3/SUTTest.java,src/main/java/es/upm/grise/prof/curso2023/ejercicio3/SUT.java";
 
         String[] lineItem;
         TestFile testFile;
         List<TestFile> testFiles = new ArrayList<>();
-        while ((str = in.readLine()) != null) {
-            // use comma as separator
-            lineItem = str.split(",");
+        // use comma as separator
+        lineItem = str.split(",");
 
-            //check if the test file has an associated production file
-            if(lineItem.length ==2){
-                testFile = new TestFile(lineItem[0], lineItem[1], "");
-            }
-            else{
-                testFile = new TestFile(lineItem[0], lineItem[1], lineItem[2]);
-            }
-
-            testFiles.add(testFile);
+        // check if the test file has an associated production file
+        if (lineItem.length == 2) {
+            testFile = new TestFile(lineItem[0], lineItem[1], "");
+        } else {
+            testFile = new TestFile(lineItem[0], lineItem[1], lineItem[2]);
         }
 
-        in.close();
-        
+        testFiles.add(testFile);
+
         /*
-          Initialize the output file - Create the output file and add the column names
+         * Initialize the output file - Create the output file and add the column names
          */
         ResultsWriter resultsWriter = ResultsWriter.createResultsWriter();
         List<String> columnNames;
@@ -75,20 +66,20 @@ public class Main {
         resultsWriter.writeColumnName(columnNames);
 
         /*
-          Iterate through all test files to detect smells and then write the output
-        */
+         * Iterate through all test files to detect smells and then write the output
+         */
         TestFile tempFile;
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date;
         for (TestFile file : testFiles) {
             date = new Date();
-            System.out.println(dateFormat.format(date) + " Processing: "+file.getTestFilePath());
-            System.out.println("Processing: "+file.getTestFilePath());
+            System.out.println(dateFormat.format(date) + " Processing: " + file.getTestFilePath());
+            System.out.println("Processing: " + file.getTestFilePath());
 
-            //detect smells
+            // detect smells
             tempFile = testSmellDetector.detectSmells(file);
 
-            //write output
+            // write output
             columnValues = new ArrayList<>();
             columnValues.add(file.getApp());
             columnValues.add(file.getTestFileName());
@@ -99,8 +90,7 @@ public class Main {
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
                     columnValues.add(String.valueOf(smell.getHasSmell()));
-                }
-                catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     columnValues.add("");
                 }
             }
@@ -109,6 +99,5 @@ public class Main {
 
         System.out.println("end");
     }
-
 
 }
