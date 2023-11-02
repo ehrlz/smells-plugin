@@ -8,26 +8,19 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 
 
-@Mojo(name = "smells", defaultPhase = LifecyclePhase.VALIDATE)
+@Mojo(name = "smells", defaultPhase = LifecyclePhase.TEST)
 public class Plugin extends AbstractMojo
 {
-
-    @Parameter(property = "smells.csv_path", defaultValue = "file.csv")
-    String csvPath = "";
-    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -61,7 +54,6 @@ public class Plugin extends AbstractMojo
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             Runtime.getRuntime().exec("rm -f Output_TestSmellDetection.csv");
 
         } catch (IOException e) {

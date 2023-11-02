@@ -30,9 +30,13 @@ Add to `pom.xml`:
             <groupId>com.eherrelaz</groupId>
             <artifactId>smells-plugin</artifactId>
             <version>0.1</version>
-            <configuration>
-                <csv_path>file.csv</csv_path>
-            </configuration>
+            <executions>
+                <execution>
+                <goals>
+                    <goal>smells</goal>
+                </goals>
+                </execution>
+          </executions>
         </plugin>
 
     ...
@@ -41,8 +45,12 @@ Add to `pom.xml`:
 </build>
 ```
 
+> Be careful to not use "pluginManagement", this prevents running to 2 test plugins at the same time.
+
 ## Execution
 
+`mvn test`
+or
 `mvn com.eherrelaz:smells-plugin:smells`
 
 > Must be a csv file called `file.csv` in the **root** of the project dir.
