@@ -1,10 +1,9 @@
 package com.eherrelaz;
 
-import testsmell.AbstractSmell;
-import testsmell.ResultsWriter;
-import testsmell.TestFile;
-import testsmell.TestSmellDetector;
-import thresholds.DefaultThresholds;
+import com.eherrelaz.testsmell.AbstractSmell;
+import com.eherrelaz.testsmell.ResultsWriter;
+import com.eherrelaz.testsmell.TestFile;
+import com.eherrelaz.testsmell.TestSmellDetector;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,15 +21,15 @@ public class Main {
             System.out.println("Please provide the file containing the paths to the collection of test files");
             return;
         }
-        if (!args[0].isEmpty()) {
+        if(!args[0].isEmpty()){
             File inputFile = new File(args[0]);
-            if (!inputFile.exists() || inputFile.isDirectory()) {
+            if(!inputFile.exists() || inputFile.isDirectory()) {
                 System.out.println("Please provide a valid file containing the paths to the collection of test files");
                 return;
             }
         }
 
-        TestSmellDetector testSmellDetector = new TestSmellDetector(new DefaultThresholds());
+        TestSmellDetector testSmellDetector = new TestSmellDetector();
 
         /*
           Read the input file and build the TestFile objects
@@ -46,9 +45,10 @@ public class Main {
             lineItem = str.split(",");
 
             //check if the test file has an associated production file
-            if (lineItem.length == 2) {
+            if(lineItem.length ==2){
                 testFile = new TestFile(lineItem[0], lineItem[1], "");
-            } else {
+            }
+            else{
                 testFile = new TestFile(lineItem[0], lineItem[1], lineItem[2]);
             }
 
@@ -56,7 +56,7 @@ public class Main {
         }
 
         in.close();
-
+        
         /*
           Initialize the output file - Create the output file and add the column names
          */
@@ -71,7 +71,6 @@ public class Main {
         columnNames.add(3, "ProductionFilePath");
         columnNames.add(4, "RelativeTestFilePath");
         columnNames.add(5, "RelativeProductionFilePath");
-        columnNames.add(6, "NumberOfMethods");
 
         resultsWriter.writeColumnName(columnNames);
 
@@ -83,8 +82,8 @@ public class Main {
         Date date;
         for (TestFile file : testFiles) {
             date = new Date();
-            System.out.println(dateFormat.format(date) + " Processing: " + file.getTestFilePath());
-            System.out.println("Processing: " + file.getTestFilePath());
+            System.out.println(dateFormat.format(date) + " Processing: "+file.getTestFilePath());
+            System.out.println("Processing: "+file.getTestFilePath());
 
             //detect smells
             tempFile = testSmellDetector.detectSmells(file);
@@ -97,11 +96,11 @@ public class Main {
             columnValues.add(file.getProductionFilePath());
             columnValues.add(file.getRelativeTestFilePath());
             columnValues.add(file.getRelativeProductionFilePath());
-            columnValues.add(String.valueOf(file.getNumberOfTestMethods()));
             for (AbstractSmell smell : tempFile.getTestSmells()) {
                 try {
-                    columnValues.add(String.valueOf(smell.getNumberOfSmellyTests()));
-                } catch (NullPointerException e) {
+                    columnValues.add(String.valueOf(smell.getHasSmell()));
+                }
+                catch (NullPointerException e){
                     columnValues.add("");
                 }
             }
@@ -110,4 +109,6 @@ public class Main {
 
         System.out.println("end");
     }
+
+
 }
