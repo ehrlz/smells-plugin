@@ -4,7 +4,11 @@
 
 ### Download to your local repository (.m2)
 
-Get the lastest release of this respository.
+Get the lastest release of this respository:
+
+``` bash
+wget https://github.com/ehrlz/smells-plugin/releases/download/v0.1-first/smells-plugin-0.1.jar
+```
 
 Install it in the local repository:
 
