@@ -3,7 +3,6 @@ package com.eherrelaz;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -12,12 +11,8 @@ import org.jsoup.nodes.Element;
 
 public class Csv2HTML {
     public static void main() throws IOException {
-
-        String time = String.valueOf(Calendar.getInstance().getTimeInMillis());
-
         try (FileReader reader = new FileReader("Output_TestSmellDetection.csv");
-
-                FileWriter writer = new FileWriter("output" + time + ".html")) {
+                FileWriter writer = new FileWriter("output.html")) {
 
             // Create an HTML document
             Document doc = new Document("");
