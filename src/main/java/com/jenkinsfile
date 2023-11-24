@@ -1,0 +1,25 @@
+
+// for load and install the plugin in jenkins
+pipeline {
+    agent any
+    
+    stages {
+        stage('Clonar Repositorio') {
+            steps {
+                script {
+                    checkout([$class: 'GitSCM', 
+                        branches: [[name: 'main']], 
+                        userRemoteConfigs: [[url: 'https://github.com/ehrlz/smells-plugin.git', credentialsId: 'github_ehrlz']]])
+                }
+            }
+        }
+
+        stage('Compilar e instalar con Maven') {
+            steps {
+                script {
+                    sh "mvn clean install"
+                }
+            }
+        }
+    }
+}
